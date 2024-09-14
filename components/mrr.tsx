@@ -71,10 +71,14 @@ export function EnhancedMrrGenerator() {
     setTiers(tiers.filter((_, i) => i !== index))
   }
 
-  const updateTier = (index: number, field: string, value: string) => {
-    const newTiers = [...tiers]
-    newTiers[index][field] = field === 'name' ? value : parseFloat(value)
-    setTiers(newTiers)
+  const updateTier = (index: number, field: keyof typeof tiers[0], value: string) => {
+    const newTiers = [...tiers];
+    if (field === 'name') {
+      newTiers[index][field] = value;
+    } else if (field === 'price' || field === 'customers') {
+      newTiers[index][field] = parseFloat(value);
+    }
+    setTiers(newTiers);
   }
 
   const calculateMRR = () => {
@@ -88,12 +92,12 @@ export function EnhancedMrrGenerator() {
     )
   }
 
-  const [mrrData, setMrrData] = useState([])
-  const [projectedData, setProjectedData] = useState([])
+  const [mrrData, setMrrData] = useState<number[]>([])
+  const [projectedData, setProjectedData] = useState<number[]>([])
 
   useEffect(() => {
     const projection = generateProjection()
-    setMrrData(projection.map(value => value * (1 + (Math.random() - 0.5) * 0.1))) // Add some randomness
+    setMrrData(projection.map(value => value * (1 + (Math.random() - 0.5) * 0.1))) 
     setProjectedData(projection)
   }, [tiers, projectionMonths, growthRate])
 
