@@ -18,24 +18,35 @@ const Graph = ({ data, projectedData, startDate, endDate }: {
   const range = maxValue - minValue
 
   const normalizeValue = (value: number) => {
-    return 100 - ((value - minValue) / range) * 80
+    return 90 - ((value - minValue) / range) * 80
   }
 
   const formatDate = (date: Date) => {
     return date.toLocaleString('default', { month: 'short', year: 'numeric' })
   }
 
-  return (
-    <div className="w-full h-64 bg-white rounded-lg relative overflow-hidden">
-      <svg viewBox="0 0 100 100" className="w-full h-full">
-        {/* Grid lines */}
-        {[20, 40, 60, 80].map((y) => (
-          <line key={y} x1="0" y1={y} x2="100" y2={y} stroke="#e5e7eb" strokeWidth="0.5" />
-        ))}
+  const formatCurrency = (value: number) => {
+    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(value)
+  }
 
+  const yAxisLabels = [maxValue, (minValue + maxValue) / 2, minValue]
+
+  return (
+    <div className="w-full h-64 bg-white relative">
+      <div className="absolute top-0 left-0 bottom-0 w-16 flex flex-col justify-between text-xs text-gray-500 py-2">
+        {yAxisLabels.map((value, index) => (
+          <div key={index}>{formatCurrency(value)}</div>
+        ))}
+      </div>
+      <svg viewBox="0 0 100 100" className="w-full h-full" preserveAspectRatio="none">
+        {/* Horizontal grid lines */}
+        {[10, 50, 90].map((y) => (
+          <line key={y} x1="16" y1={y} x2="100" y2={y} stroke="#e5e7eb" strokeWidth="0.5" />
+        ))}
+        
         {/* Projected line */}
         <polyline
-          points={projectedData.map((value, index) => `${index * (100 / (projectedData.length - 1))},${normalizeValue(value)}`).join(' ')}
+          points={projectedData.map((value, index) => `${16 + index * (84 / (projectedData.length - 1))},${normalizeValue(value)}`).join(' ')}
           fill="none"
           stroke="#e5e7eb"
           strokeWidth="1"
@@ -43,13 +54,13 @@ const Graph = ({ data, projectedData, startDate, endDate }: {
 
         {/* Actual line */}
         <polyline
-          points={data.map((value, index) => `${index * (100 / (data.length - 1))},${normalizeValue(value)}`).join(' ')}
+          points={data.map((value, index) => `${16 + index * (84 / (data.length - 1))},${normalizeValue(value)}`).join(' ')}
           fill="none"
           stroke="#4f46e5"
           strokeWidth="2"
         />
       </svg>
-      <div className="absolute bottom-0 left-0 right-0 flex justify-between text-xs text-gray-500 px-2">
+      <div className="absolute bottom-0 left-16 right-0 flex justify-between text-xs text-gray-500 px-2">
         <span>{formatDate(startDate)}</span>
         <span>{formatDate(endDate)}</span>
       </div>
@@ -61,7 +72,7 @@ export function EnhancedMrrGenerator() {
   const [tiers, setTiers] = useState([{ name: 'Basic', price: 9.99, customers: 100 }])
   const [projectionMonths, setProjectionMonths] = useState(12)
   const [startDate, setStartDate] = useState(new Date('2023-01-01'))
-  const [growthRate, setGrowthRate] = useState(10) // 10% monthly growth rate
+  const [growthRate, setGrowthRate] = useState(10) // 10% monthly growth rate by daefault
 
   const addTier = () => {
     setTiers([...tiers, { name: '', price: 0, customers: 0 }])
@@ -171,7 +182,7 @@ export function EnhancedMrrGenerator() {
             <CardTitle className="text-2xl font-semibold text-purple-600">MRR Projection</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+            <div className="grid grid-cols-1 md:grid-cols-1 gap-4 mb-6">
               <div>
                 <Label htmlFor="projection-months">Projection Months</Label>
                 <Input
@@ -203,17 +214,17 @@ export function EnhancedMrrGenerator() {
                 />
               </div>
             </div>
-            <div className="mb-4">
+            <div className="space-y-2">
               <div className="flex justify-between items-baseline">
-                <div>
-                  <span className="text-2xl font-bold">MRR</span>
-                  <span className="ml-2 text-sm font-medium text-green-600">+{calculateGrowth()}%</span>
+                <div className="flex items-baseline">
+                  <span className="text-2xl font-bold mr-2">MRR</span>
+                  <span className="text-sm font-medium text-green-600">+{calculateGrowth()}%</span>
                 </div>
                 <span className="text-gray-500">{formatCurrency(mrrData[0])}</span>
               </div>
               <div className="text-3xl font-bold">{formatCurrency(mrrData[mrrData.length - 1])}</div>
+              <Graph data={mrrData} projectedData={projectedData} startDate={startDate} endDate={endDate} />
             </div>
-            <Graph data={mrrData} projectedData={projectedData} startDate={startDate} endDate={endDate} />
           </CardContent>
         </Card>
       </div>
