@@ -13,7 +13,7 @@ const Graph = ({ data, projectedData, startDate, endDate }: {
   startDate: Date;
   endDate: Date;
 }) => {
-  const maxValue = Math.max(...data, ...projectedData)
+  const maxValue = Math.max(...data,  ...projectedData)
   const minValue = Math.min(...data, ...projectedData)
   const range = maxValue - minValue
 
