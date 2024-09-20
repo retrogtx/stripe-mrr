@@ -1,4 +1,4 @@
-import { CustomizableIphoneLockScreen } from "@/components/customizable-iphone-lock-screen"
+import { CustomizableIphoneLockScreen } from "@/components/lock-screen"
 
 const page = () => {
   return (

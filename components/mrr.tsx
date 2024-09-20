@@ -92,21 +92,21 @@ export function EnhancedMrrGenerator() {
     setTiers(newTiers);
   }
 
-  const calculateMRR = () => {
-    return tiers.reduce((total, tier) => total + tier.price * tier.customers, 0)
-  }
-
-  const generateProjection = () => {
-    const initialMRR = calculateMRR()
-    return Array(projectionMonths).fill(0).map((_, i) => 
-      initialMRR * Math.pow(1 + growthRate / 100, i)
-    )
-  }
-
   const [mrrData, setMrrData] = useState<number[]>([])
   const [projectedData, setProjectedData] = useState<number[]>([])
 
   useEffect(() => {
+    const calculateMRR = () => {
+      return tiers.reduce((total, tier) => total + tier.price * tier.customers, 0)
+    }
+
+    const generateProjection = () => {
+      const initialMRR = calculateMRR()
+      return Array(projectionMonths).fill(0).map((_, i) => 
+        initialMRR * Math.pow(1 + growthRate / 100, i)
+      )
+    }
+
     const projection = generateProjection()
     setMrrData(projection.map(value => value * (1 + (Math.random() - 0.5) * 0.1))) 
     setProjectedData(projection)

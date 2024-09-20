@@ -1,10 +1,10 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Lock, Moon, Wifi, Plus, Minus, Edit2 } from 'lucide-react'
+import { Lock, Moon, Plus, Minus, Edit2 } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 
 interface Notification {
   id: number;
@@ -179,7 +179,7 @@ export function CustomizableIphoneLockScreen() {
       </div>
       <div className="mt-4 flex space-x-2">
         <Button onClick={addNotification}><Plus className="w-4 h-4 mr-2" /> Add Notification</Button>
-        <Button onClick={removeNotification} variant="outline"><Minus className="w-4 h-4 mr-2" /> Remove Notification</Button>
+        <Button onClick={removeNotification} variant="secondary"><Minus className="w-4 h-4 mr-2" /> Remove Notification</Button>
       </div>
       <Dialog open={editingNotification !== null} onOpenChange={() => setEditingNotification(null)}>
         <DialogContent>
